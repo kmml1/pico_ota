@@ -14,14 +14,15 @@ class OTAUpdater:
             print(f"Updating {repo_url} to raw.githubusercontent'")
             self.repo_url = self.repo_url.replace("github","raw.githubusercontent")            
 
-    def update(self, filename):
+    def update(self, filename, print_response=False):
         print(f"Checking for updates {filename}...")
         url = self.repo_url + filename
         print(f'Fetching file: {url}...')
         response = requests.get(url)
         print(f'Status code: {response.status_code}')
-        print("Response:")
-        print(response.text)
+        if print_response:
+            print("Response:")
+            print(response.text)
         if response.status_code != 200:
             return False
         with open('latest_code.py', 'w') as f:
