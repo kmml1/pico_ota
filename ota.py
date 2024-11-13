@@ -30,9 +30,12 @@ class OTAUpdater:
 
         with open('latest_code.py', 'rb') as f:
             new_file_hash = hashlib.sha256(f.read()).digest()
-        with open(filename, 'rb') as f:
-            current_file_hash = hashlib.sha256(f.read()).digest()
-
+        try:
+            with open(filename, 'rb') as f:
+                current_file_hash = hashlib.sha256(f.read()).digest()
+        except:
+            current_file_hash = 0
+            
         print(f'Current version is {current_file_hash}')
         print(f'Latest version is: {new_file_hash}')
 
