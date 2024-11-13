@@ -48,3 +48,5 @@ class OTAUpdater:
         else:
             print('No new updates available.')
             return False
+        return True
+
