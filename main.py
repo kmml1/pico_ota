@@ -1,15 +1,45 @@
 from ota import OTAUpdater
-from WIFI_CONFIG import SSID, PASSWORD
+import network
+from time import sleep
 
-firmware_url = "https://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@raw.githubusercontent.com/kmml1/pico_ota/master/"
+nic = None
+ip = None
 
+
+def connect_wifi(ssid, password):
+    global nic
+    if ssid is None and password is None:
+        print('No network credentials provided')
+        return None
+    nic = network.WLAN(network.STA_IF)
+    nic.active(True)
+    nic.connect(ssid, password)
+    while not nic.isconnected():
+        print('.', end="")
+        sleep(0.25)
+    ip = nic.ifconfig()[0]
+    print(f'Connected to WiFi, IP is: {ip}')
+
+
+def connect_lan():
+    global nic
+    global ip
+    spi = machine.SPI(0, 2_000_000, mosi=machine.Pin(19), miso=machine.Pin(16), sck=machine.Pin(18))
+    nic = network.WIZNET5K(spi, machine.Pin(17), machine.Pin(20))
+    nic.active(True)
+    while not nic.isconnected():
+        print('.', end="")
+        sleep(0.25)
+    ip = nic.ifconfig()[0]
+    print(f'Connected to LAN, IP is: {ip}')
+
+
+firmware_url = "https://raw.githubusercontent.com/kmml1/pico_ota/master/"
 ota_updater = OTAUpdater(firmware_url, "main.py")
 
-ota_updater.download_and_install_update_if_available()
-
+# ota_updater.download_and_install_update_if_available()
 
 pwm2 = machine.PWM(machine.Pin(9))
-
 
 def set_pwm(pwm: machine.PWM, freq: int, duty: float):
     if duty < 0 or duty > 1:
@@ -30,6 +60,4 @@ def set_pwm(pwm: machine.PWM, freq: int, duty: float):
         return e
 
 
-print(set_pwm(pwm2, 8, 0.5))
-
-
+print(set_pwm(pwm2, 8, 0.9))
