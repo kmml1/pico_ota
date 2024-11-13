@@ -24,11 +24,8 @@ class OTAUpdater:
         print(response.text)
         if response.status_code != 200:
             return False
-        with open('latest_code.py', 'w') as f:
-            f.write(response.text)
 
-        with open('latest_code.py', 'rb') as f:
-            new_file_hash = hashlib.sha256(f.read()).digest()
+        new_file_hash = hashlib.sha256(response.text).digest()
         with open(filename, 'rb') as f:
             current_file_hash = hashlib.sha256(f.read()).digest()
 
@@ -38,10 +35,11 @@ class OTAUpdater:
         if current_file_hash != new_file_hash:
             print('New updates available.')
             print(f'Overwriting {filename}...')
-
+            with open('latest_code.py', 'w') as f:
+                f.write(response.text)
             os.rename('latest_code.py', filename)
-            print('Restarting device...')
-            machine.reset()
+            # print('Restarting device...')
+            # machine.reset()
         else:
             print('No new updates available.')
             return False
