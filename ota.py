@@ -25,7 +25,7 @@ class OTAUpdater:
         if response.status_code != 200:
             return False
 
-        new_file_hash = hashlib.sha256(b"response.text").digest()
+        new_file_hash = hashlib.sha256(bytes(response.text)).digest()
         with open(filename, 'rb') as f:
             current_file_hash = hashlib.sha256(f.read()).digest()
 
