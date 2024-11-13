@@ -1,24 +1,8 @@
 from ota import OTAUpdater
 import network
-from time import sleep
-
+import time
 nic = None
 ip = None
-
-
-def connect_wifi(ssid, password):
-    global nic
-    if ssid is None and password is None:
-        print('No network credentials provided')
-        return None
-    nic = network.WLAN(network.STA_IF)
-    nic.active(True)
-    nic.connect(ssid, password)
-    while not nic.isconnected():
-        print('.', end="")
-        sleep(0.25)
-    ip = nic.ifconfig()[0]
-    print(f'Connected to WiFi, IP is: {ip}')
 
 
 def connect_lan():
@@ -27,19 +11,21 @@ def connect_lan():
     spi = machine.SPI(0, 2_000_000, mosi=machine.Pin(19), miso=machine.Pin(16), sck=machine.Pin(18))
     nic = network.WIZNET5K(spi, machine.Pin(17), machine.Pin(20))
     nic.active(True)
-    while not nic.isconnected():
+    start_time = time.time()
+    while not nic.isconnected() and time.time() - start_time < 30:
         print('.', end="")
-        sleep(0.25)
+        time.sleep(0.25)
     ip = nic.ifconfig()[0]
     print(f'Connected to LAN, IP is: {ip}')
 
 
-firmware_url = "https://raw.githubusercontent.com/kmml1/pico_ota/master/"
-ota_updater = OTAUpdater(firmware_url, "main.py")
+connect_lan()
 
-# ota_updater.download_and_install_update_if_available()
+ota_updater = OTAUpdater("https://raw.githubusercontent.com/kmml1/pico_ota/master/")
+# ota_updater.update("ota.py")
 
 pwm2 = machine.PWM(machine.Pin(9))
+
 
 def set_pwm(pwm: machine.PWM, freq: int, duty: float):
     if duty < 0 or duty > 1:
@@ -59,5 +45,4 @@ def set_pwm(pwm: machine.PWM, freq: int, duty: float):
     except Exception as e:
         return e
 
-
-print(set_pwm(pwm2, 8, 0.9))
+print(set_pwm(pwm2, 30000, 0.9))
