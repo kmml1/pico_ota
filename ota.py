@@ -15,7 +15,7 @@ class OTAUpdater:
             self.repo_url = self.repo_url.replace("github","raw.githubusercontent")            
 
     def update(self, filename, print_response=False):
-        print(f"Checking for updates {filename}...")
+        print(f"----- Updating file: {filename} -----")
         url = self.repo_url + filename
         print(f'Fetching file: {url}...')
         response = requests.get(url)
@@ -34,7 +34,9 @@ class OTAUpdater:
             with open(filename, 'rb') as f:
                 current_file_hash = hashlib.sha256(f.read()).digest()
         except:
-            current_file_hash = 0
+            print(f"New file: {filename} - downloading...")
+            os.rename('latest_code.py', filename)
+            return True
             
         print(f'Current version is {current_file_hash}')
         print(f'Latest version is: {new_file_hash}')
