@@ -22,8 +22,13 @@ def connect_lan():
 connect_lan()
 
 ota_updater = OTAUpdater("https://raw.githubusercontent.com/kmml1/pico_ota/master/")
-# ota_updater.update("ota.py")
-
+updated = False
+updated = updated or ota_updater.update("ota.py")
+updated = updated or ota_updater.update("main.py")
+if updated:
+    print('Restarting device...')
+    machine.reset()
+    
 pwm2 = machine.PWM(machine.Pin(9))
 
 
