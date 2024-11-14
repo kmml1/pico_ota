@@ -22,11 +22,12 @@ class Server:
             <!DOCTYPE html>
             <html>
             <head>
-                <title>Pico Web Server</title>
+                <title>Zwieraczka</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1">
             </head>
             <body>
-                <h1>Raspberry Pi Pico Web Server</h1>
+                <h1>Zwieraczka v0.1</h1>
+                
                 <h2>Led Control</h2>
                 <form action="./lighton">
                     <input type="submit" value="Light on" />
@@ -37,18 +38,24 @@ class Server:
                 </form>
                 
                 
-                <form action="./frequency" method="get">
+                <form action="./start_pwm" method="get">
                     <label for="number">Frequency in kHz:</label>
                     <input type="number" id="freq" name="freq" required>
-                    <input type="submit" value="Submit">
+                    <br>
+                    <label for="number">Duty <0,1>:</label>
+                    <input type="number" id="freq" name="freq" required>
+                    <br>
+                    <label for="number">Time (0 is infinity):</label>
+                    <input type="number" id="freq" name="freq" required>
+                    <br>
+                    <input type="submit" value="Start PWM">
+                </form>
+                
+                <form action="./stop_pwm" method="get">
+                    <input type="submit" value="Stop PWM" />
                 </form>
                 
                 <p>LED state: {state}</p>
-                <h2>Fetch New Value</h2>
-                <form action="./value">
-                    <input type="submit" value="Fetch value" />
-                </form>
-                <p>Fetched value: {random_value}</p>
             </body>
             </html>
             """
