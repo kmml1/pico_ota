@@ -7,7 +7,7 @@ ip = None
 
 status_led = machine.PWM(machine.Pin(25))
 status_led.freq(8)
-status_led.duty_uint16(25000)
+status_led.duty_u16(25000)
 
 
 def connect_lan():
@@ -31,11 +31,11 @@ updated = 0
 updated += int(ota_updater.update("ota.py"))
 updated += int(ota_updater.update("main.py"))
 if updated:
-    status_led.duty_uint16(0)
+    status_led.duty_u16(0)
     print('Restarting device...')
     machine.reset()
 
-status_led.duty_uint16(70000)
+status_led.duty_u16(70000)
 
 
 
