@@ -63,6 +63,8 @@ class Server:
 
     def start(self):
         print('Listening on', self.addr)
+        global set_pwm
+        global pwm2
         while True:
             try:
                 conn, addr = self.s.accept()
