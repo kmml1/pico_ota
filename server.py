@@ -43,10 +43,10 @@ class Server:
                     <input type="number" id="freq" name="freq" required>
                     <br>
                     <label for="number">Duty <0,1>:</label>
-                    <input type="number" id="freq" name="freq" required>
+                    <input type="number" id="duty" name="duty" required>
                     <br>
                     <label for="number">Time (0 is infinity):</label>
-                    <input type="number" id="freq" name="freq" required>
+                    <input type="number" id="time" name="time" required>
                     <br>
                     <input type="submit" value="Start PWM">
                 </form>
@@ -87,11 +87,10 @@ class Server:
                 elif request == '/lightoff?':
                     self.led.value(0)
                     self.state = 'OFF'
-                elif request == '/value?':
-                    self.random_value = random.randint(0, 20)
-                elif request == '/frequency?':
-                    self.random_value = random.randint(0, 20)
-
+                elif request == '/start_pwm?':
+                    print(set_pwm(pwm2, 30000, 0.5))
+                elif request == '/stop_pwm?':
+                    print(set_pwm(pwm2, 30000, 0))
 
                 # Generate HTML response
                 response = self.webpage(self.random_value, self.state)
