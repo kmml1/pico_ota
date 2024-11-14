@@ -85,6 +85,8 @@ class Server:
                     self.state = 'OFF'
                 elif request == '/value?':
                     self.random_value = random.randint(0, 20)
+                elif request == '/frequency?':
+                    self.random_value = random.randint(0, 20)
 
 
                 # Generate HTML response
