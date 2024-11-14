@@ -1,4 +1,5 @@
 from ota import OTAUpdater
+from server import Server
 import network
 import time
 
@@ -29,11 +30,15 @@ connect_lan()
 ota_updater = OTAUpdater("https://raw.githubusercontent.com/kmml1/pico_ota/master/")
 updated = 0
 updated += int(ota_updater.update("ota.py"))
+updated += int(ota_updater.update("boot.py"))
 updated += int(ota_updater.update("main.py"))
+updated += int(ota_updater.update("server.py"))
 if updated:
     status_led.duty_u16(0)
     print('Restarting device...')
     machine.reset()
+
+server = Server()
 
 status_led.duty_u16(70000)
 

@@ -1,10 +1,3 @@
-from ota import OTAUpdater
-import network
-import time
-nic = None
-ip = None
-
-
 pwm2 = machine.PWM(machine.Pin(9))
 
 
@@ -27,7 +20,7 @@ def set_pwm(pwm: machine.PWM, freq: int, duty: float):
         return e
     return ""
 
-print(set_pwm(pwm2, 30000, 0.9))
+print(set_pwm(pwm2, 30000, 0.5))
 
 
 
