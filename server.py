@@ -13,10 +13,7 @@ class Server:
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.s.bind(self.addr)
         self.s.listen()
-        print('Listening on', self.addr)
         self.led = Pin('LED', Pin.OUT)
-
-        # Initialize variables
         self.state = "OFF"
         self.random_value = 0
 
@@ -58,7 +55,7 @@ class Server:
         return str(html)
 
     def start(self):
-        # Main loop to listen for connections
+        print('Listening on', self.addr)
         while True:
             try:
                 conn, addr = self.s.accept()
