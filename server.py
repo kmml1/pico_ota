@@ -38,6 +38,14 @@ class Server:
                 <form action="./lightoff">
                     <input type="submit" value="Light off" />
                 </form>
+                
+                
+                <form action="./frequency" method="get">
+                    <label for="number">Frequency in kHz:</label>
+                    <input type="number" id="freq" name="freq" required>
+                    <input type="submit" value="Submit">
+                </form>
+                
                 <p>LED state: {state}</p>
                 <h2>Fetch New Value</h2>
                 <form action="./value">
@@ -77,6 +85,7 @@ class Server:
                     self.state = 'OFF'
                 elif request == '/value?':
                     self.random_value = random.randint(0, 20)
+
 
                 # Generate HTML response
                 response = self.webpage(self.random_value, self.state)
