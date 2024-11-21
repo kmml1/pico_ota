@@ -23,7 +23,7 @@ class Server:
         # all duty values in us
         OSCILATION_TIME = 3  # oscillation time is 3 us, doubled for better square signa;
         duty_cycle_us = 1_000_000.0 / freq
-        duty_us = duty * duty_cycle_us
+        duty_us = duty / 100 * duty_cycle_us
         if duty_us < OSCILATION_TIME or duty_cycle_us - duty_us < OSCILATION_TIME:
             return f"Either low or high pulse must be at least {OSCILATION_TIME}us long, requested duty {duty_us}us"
         try:
@@ -46,20 +46,20 @@ class Server:
                 <h1>Zwieraczka v0.1</h1>
                 
                 <p>Frequency: {freq}Hz</p>
-                <p>Duty: {duty}</p>
+                <p>Duty: {duty}%</p>
                 <form action="./start_pwm" method="get">
-                    <label for="number">Frequency in kHz:</label>
-                    <input type="number" id="freq" name="freq" required>
+                        <input type="number" id="freq" name="freq" required>
+                        <label for="number">Frequency in kHz:</label>
                     <br>
-                    <label for="number">Duty <0,1>:</label>
-                    <input type="number" id="duty" name="duty" required>
+                        <input type="number" id="duty" name="duty" required>
+                        <label for="number">Duty <0,1>:</label>
                     <br>
-                    <label for="number">PWM time in ms (0 or empty is infinity):</label>
-                    <input type="number" id="time" name="time">
+                        <input type="number" id="time" name="time">
+                        <label for="number">PWM time in ms (0 or empty is infinity):</label>
                     <br>
                     <input type="submit" value="Start PWM">
                 </form>
-                
+                <br>
                 <form action="./stop_pwm" method="get">
                     <input type="submit" value="Stop PWM" />
                 </form>
