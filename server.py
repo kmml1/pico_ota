@@ -80,15 +80,25 @@ class Server:
                 print('Got a connection from', addr)
                 request = conn.recv(1024)
                 request = str(request)
-                request = request.split()
+                request = request.split()[1]
                 print(f'Request: {request}')
 
                 response = None
 
-                if request == '/start_pwm?':
-                    print(request)
-                    response = self.webpage(8, 50, self.set_pwm(self.pwm2, 80, 5))
-                elif request == '/stop_pwm?':
+                if request.startswith('/start_pwm?'):
+                    params = request.split('?')[1].split('&')
+                    freq = 0
+                    duty = 0
+                    time = 0
+                    for param in params:
+                        if param.split('=')[0] == 'freq':
+                            freq = int(param.split('=')[1])
+                        elif param.split('=')[0] == 'duty':
+                            duty = float(param.split('=')[1])
+                        elif param.split('=')[0] == 'time' and len(param.split('=')) == 2:
+                            time = float(param.split('=')[1])
+                    response = self.webpage(freq, duty, self.set_pwm(self.pwm2, freq, duty))
+                elif request.startswith('/stop_pwm'):
                     response = self.webpage(8, 0, self.set_pwm(self.pwm2, 8, 0))
                 else:
                     response = self.webpage(None, None, None)
