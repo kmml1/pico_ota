@@ -6,14 +6,14 @@ import machine
 
 
 class Server:
-    def __init__(self):
+    def __init__(self, pwm):
         # Set up socket and start listening
         self.addr = socket.getaddrinfo('0.0.0.0', 80)[0][-1]
         self.s = socket.socket()
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.s.bind(self.addr)
         self.s.listen()
-        self.pwm2 = machine.PWM(machine.Pin(9))
+        self.pwm2 = pwm
 
     def set_pwm(self, pwm: machine.PWM, freq: int, duty: float):
         if duty < 0 or duty > 1:

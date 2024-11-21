@@ -38,7 +38,7 @@ if updated:
     print('Restarting device...')
     machine.reset()
 
-server = Server()
+server = Server(machine.PWM(machine.Pin(9)))
 
 status_led.duty_u16(70000)
 
