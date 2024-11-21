@@ -87,13 +87,14 @@ class Server:
                 except IndexError:
                     pass
 
-                freq = 0
-                duty = 0
+                freq = None
+                duty = None
 
                 if request == '/start_pwm?':
-                    print(set_pwm(pwm2, 30000, 0.5))
+                    print(request)
                 elif request == '/stop_pwm?':
-                    print(set_pwm(pwm2, 30000, 0))
+                    freq = 0
+                    duty = 0
 
                 # Generate HTML response
                 response = self.webpage(freq, duty, self.set_pwm(self.pwm2, freq, duty))
