@@ -90,8 +90,8 @@ class Server:
                     response = self.webpage(8, 50, self.set_pwm(self.pwm2, 80, 5))
                 elif request == '/stop_pwm?':
                     response = self.webpage(8, 0, self.set_pwm(self.pwm2, 8, 0))
-
-                # Generate HTML response
+                else:
+                    response = self.webpage(None, None, None)
 
                 # Send the HTTP response and close the connection
                 conn.send('HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n')
