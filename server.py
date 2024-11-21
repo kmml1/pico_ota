@@ -80,12 +80,8 @@ class Server:
                 print('Got a connection from', addr)
                 request = conn.recv(1024)
                 request = str(request)
-                print('Request content = %s' % request)
-                try:
-                    request = request.split()[1]
-                    print('Request:', request)
-                except IndexError:
-                    pass
+                request = request.split()
+                print(f'Request: {request}')
 
                 freq = None
                 duty = None
@@ -106,4 +102,5 @@ class Server:
 
             except OSError as e:
                 conn.close()
+                print('Invalid request')
                 print('Connection closed')
