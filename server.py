@@ -16,15 +16,15 @@ class Server:
         self.pwm2 = pwm
 
     def set_pwm(self, pwm: machine.PWM, freq: int, duty: float):
-        if duty < 0 or duty > 1:
-            return "Duty must be between 0 and 1"
+        if duty < 0 or duty > 100:
+            return "Duty must be between 0 and 100"
         if freq < 8:
             return "Frequency must at least 8Hz"
         # all duty values in us
         OSCILATION_TIME = 3  # oscillation time is 3 us, doubled for better square signa;
         duty_cycle_us = 1_000_000.0 / freq
         duty_us = duty / 100 * duty_cycle_us
-        if (duty_us < OSCILATION_TIME or duty_cycle_us - duty_us < OSCILATION_TIME) and not (duty == 0 or duty == 1):
+        if (duty_us < OSCILATION_TIME or duty_cycle_us - duty_us < OSCILATION_TIME) and not (duty == 0 or duty == 100):
             return f"Either low or high pulse must be at least {OSCILATION_TIME}us long, requested duty {duty_us}us"
         try:
             pwm.duty_ns(0)
