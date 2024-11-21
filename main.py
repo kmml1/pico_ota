@@ -44,4 +44,6 @@ status_led.duty_u16(70000)
 
 
 
+import _thread
+_thread.start_new_thread(server.start, ())
 

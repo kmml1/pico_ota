@@ -2,6 +2,7 @@ import network
 import socket
 import time
 import random
+import machine
 
 
 class Server:
