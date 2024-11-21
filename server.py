@@ -2,7 +2,6 @@ import network
 import socket
 import time
 import random
-from machine import Pin
 
 
 class Server:
@@ -13,11 +12,28 @@ class Server:
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.s.bind(self.addr)
         self.s.listen()
-        self.led = Pin('LED', Pin.OUT)
-        self.state = "OFF"
-        self.random_value = 0
+        self.pwm2 = machine.PWM(machine.Pin(9))
 
-    def webpage(self, random_value, state):
+    def set_pwm(self, pwm: machine.PWM, freq: int, duty: float):
+        if duty < 0 or duty > 1:
+            return "Duty must be between 0 and 1"
+        if freq < 8:
+            return "Frequency must at least 8Hz"
+        # all duty values in us
+        OSCILATION_TIME = 3  # oscillation time is 3 us, doubled for better square signa;
+        duty_cycle_us = 1_000_000.0 / freq
+        duty_us = duty * duty_cycle_us
+        if duty_us < OSCILATION_TIME or duty_cycle_us - duty_us < OSCILATION_TIME:
+            return f"Either low or high pulse must be at least {OSCILATION_TIME}us long, requested duty {duty_us}us"
+        try:
+            pwm.duty_ns(0)
+            pwm.freq(freq)
+            pwm.duty_ns(int(1_000 * duty_us))
+        except Exception as e:
+            return e
+        return ""
+
+    def webpage(self, freq, duty, result):
         html = f"""
             <!DOCTYPE html>
             <html>
@@ -28,16 +44,8 @@ class Server:
             <body>
                 <h1>Zwieraczka v0.1</h1>
                 
-                <h2>Led Control</h2>
-                <form action="./lighton">
-                    <input type="submit" value="Light on" />
-                </form>
-                <br>
-                <form action="./lightoff">
-                    <input type="submit" value="Light off" />
-                </form>
-                
-                
+                <p>Frequency: {freq}Hz</p>
+                <p>Duty: {duty}</p>
                 <form action="./start_pwm" method="get">
                     <label for="number">Frequency in kHz:</label>
                     <input type="number" id="freq" name="freq" required>
@@ -45,8 +53,8 @@ class Server:
                     <label for="number">Duty <0,1>:</label>
                     <input type="number" id="duty" name="duty" required>
                     <br>
-                    <label for="number">Time (0 is infinity):</label>
-                    <input type="number" id="time" name="time" required>
+                    <label for="number">PWM time in ms (0 or empty is infinity):</label>
+                    <input type="number" id="time" name="time">
                     <br>
                     <input type="submit" value="Start PWM">
                 </form>
@@ -55,7 +63,7 @@ class Server:
                     <input type="submit" value="Stop PWM" />
                 </form>
                 
-                <p>LED state: {state}</p>
+                <p>Result: {result}</p>
             </body>
             </html>
             """
@@ -69,33 +77,25 @@ class Server:
             try:
                 conn, addr = self.s.accept()
                 print('Got a connection from', addr)
-
-                # Receive and parse the request
                 request = conn.recv(1024)
                 request = str(request)
                 print('Request content = %s' % request)
-
                 try:
                     request = request.split()[1]
                     print('Request:', request)
                 except IndexError:
                     pass
 
-                # Process the request and update variables
-                if request == '/lighton?':
-                    print("LED on")
-                    self.led.value(1)
-                    self.state = "ON"
-                elif request == '/lightoff?':
-                    self.led.value(0)
-                    self.state = 'OFF'
-                elif request == '/start_pwm?':
+                freq = 0
+                duty = 0
+
+                if request == '/start_pwm?':
                     print(set_pwm(pwm2, 30000, 0.5))
                 elif request == '/stop_pwm?':
                     print(set_pwm(pwm2, 30000, 0))
 
                 # Generate HTML response
-                response = self.webpage(self.random_value, self.state)
+                response = self.webpage(freq, duty, self.set_pwm(self.pwm2, freq, duty))
 
                 # Send the HTTP response and close the connection
                 conn.send('HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n')
