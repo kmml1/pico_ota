@@ -24,7 +24,7 @@ class Server:
         OSCILATION_TIME = 3  # oscillation time is 3 us, doubled for better square signa;
         duty_cycle_us = 1_000_000.0 / freq
         duty_us = duty / 100 * duty_cycle_us
-        if duty_us < OSCILATION_TIME or duty_cycle_us - duty_us < OSCILATION_TIME:
+        if (duty_us < OSCILATION_TIME or duty_cycle_us - duty_us < OSCILATION_TIME) and not (duty == 0 or duty == 1):
             return f"Either low or high pulse must be at least {OSCILATION_TIME}us long, requested duty {duty_us}us"
         try:
             pwm.duty_ns(0)
@@ -95,8 +95,8 @@ class Server:
                             freq = int(param.split('=')[1])
                         elif param.split('=')[0] == 'duty':
                             duty = float(param.split('=')[1])
-                        elif param.split('=')[0] == 'time' and len(param.split('=')) == 2:
-                            time = float(param.split('=')[1])
+                        # elif param.split('=')[0] == 'time' and len(param.split('=')) == 2:
+                        #     time = float(param.split('=')[1])
                     response = self.webpage(freq, duty, self.set_pwm(self.pwm2, freq, duty))
                 elif request.startswith('/stop_pwm'):
                     response = self.webpage(8, 0, self.set_pwm(self.pwm2, 8, 0))
