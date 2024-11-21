@@ -83,17 +83,15 @@ class Server:
                 request = request.split()
                 print(f'Request: {request}')
 
-                freq = None
-                duty = None
+                response = None
 
                 if request == '/start_pwm?':
                     print(request)
+                    response = self.webpage(8, 50, self.set_pwm(self.pwm2, 80, 5))
                 elif request == '/stop_pwm?':
-                    freq = 0
-                    duty = 0
+                    response = self.webpage(8, 0, self.set_pwm(self.pwm2, 8, 0))
 
                 # Generate HTML response
-                response = self.webpage(freq, duty, self.set_pwm(self.pwm2, freq, duty))
 
                 # Send the HTTP response and close the connection
                 conn.send('HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n')
